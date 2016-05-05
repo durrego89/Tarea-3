@@ -10,7 +10,7 @@ void print3columns(int N, double vec[]);
 
 int main (int argc, char **argv)
 {
-  /*VARIABLE INITIALIZATION*/
+  /*Variable Initialization*/
   
   int N=atoi(argv[1]); //Char argument as number of masses (int)
   double n=(double)N; //Number of masses as double
@@ -28,8 +28,8 @@ int main (int argc, char **argv)
   /*Transform to cartesian coordinates*/
   polar2cartesian(N,P,X);
   /* Print Polar coordinates*/
-  print3columns(N,P);
-  printf("\n");
+  //print3columns(N,P);
+  //printf("\n");
   /* Print cartesian coordinates */
   print3columns(N,X);
 }
@@ -82,13 +82,12 @@ and the last N entries are azimuthal angles (Phi)
   int i;
   srand48(time(NULL)); //random seed
   double max=r;
-  double min=0;
   int cont=0;
   for (i=0;i<3*N;i++)
     {
       if ((i+1)%N==0)
 	{
-	  P[i]=(max-min)*drand48()+min;
+	  P[i]=max*drand48();
 	  if(cont==0)
 	    {
 	      max=2*PI;
@@ -98,11 +97,10 @@ and the last N entries are azimuthal angles (Phi)
 	    {
 	      max=PI;
 	    }
-	  srand48(time(NULL));
 	}
       else
 	{
-	  P[i]=(max-min)*drand48()+min;
+	  P[i]=max*drand48();
 	}
     }
 }
