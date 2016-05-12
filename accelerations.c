@@ -3,12 +3,12 @@
 #include <math.h>
 #include <time.h>
 #define PI 3.14159265358979323846
-#define G 6.66666666666666666666
+#define G 4.301*10^(-9)
 
 void random_polar(int N, double r, double P[]);
 void polar2cartesian(int N, double P[], double X[]);
 void print3columns(int N, double vec[]);
-void getAccelerations(int N,double P[], double X[], double A[],double eps);
+void getAccelerations(int N, double X[], double A[],double eps);
 
 int main (int argc, char **argv)
 {
@@ -20,7 +20,8 @@ int main (int argc, char **argv)
   
   double X[3*N]; // Cartesian Coordinates
   double P[3*N]; // Spherical coordinates
-  double A[3*N]; // Acceleration
+  double V[3*N]; // Cartesian Velocities
+  double A[3*N]; // Cartesian Acceleration
   
   // Dimensions of the space
   double s=pow(n,1.0/3); // Side of the cube (Euclidean)
@@ -32,7 +33,7 @@ int main (int argc, char **argv)
   /*Transform to cartesian coordinates*/
   polar2cartesian(N,P,X);
   /* Calculate accelerations*/
-  getAccelerations(N,P,X,A,eps);
+  getAccelerations(N,X,A,eps);
   /* Print Polar coordinates*/
   //print3columns(N,P);
   //printf("\n");
@@ -113,7 +114,7 @@ and the last N entries are azimuthal angles (Phi)
     }
 }
 
-void getAccelerations(int N,double P[], double X[], double A[],double eps)
+void getAccelerations(int N, double X[], double A[],double eps)
 /* 
 Calculate acceleration on each particle given the positions
 of all the particles calculating the gravitational
@@ -124,6 +125,7 @@ force using spherical aproximation
   double norm;
   int cont;
   int i,j;
+  double ri,rj;
   for (i=0; i<N; i++)
   {
     // Center of mass coordinates (of internal sphere)
@@ -132,11 +134,16 @@ force using spherical aproximation
     z=0;
     // Number of masses inside the shpere
     cont=0;
-    // Second loop: Calculate the force of each mass on the particle 
+    // Radius of particle i
+    ri=pow(pow(X[i],2)+pow(X[N+i],2)+pow(X[2*N+i],2),0.5);
+    
+    // Second loop: Calculate the force of each mass on the particle
     for (j=0;j<N;j++)
       {
+	//Radius of particle j
+	rj=pow(pow(X[j],2)+pow(X[N+j],2)+pow(X[2*N+j],2),0.5);
 	//Do not calculate force on itself & particle inside sphere
-	if(j!=i && P[j]<P[i]) 
+	if(j!=i && rj<ri) 
 	  {
 	    cont++;
 	    x+=X[j];
